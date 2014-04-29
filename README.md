@@ -1,5 +1,12 @@
-Karrency
-========
+Karrency (For ADT)
+====================
+
+
+Note
+----
+This is the port for Eclipse/ADT. You can find the main repo at [yelinaung/Karrency](http://www.github.com/yelinaung/Karrency)
+I could merge two repos into one soon.
+
 
 Karrency - A Simple Exchange Rate Checker & Currency Calculator. (MMK <=> Other Currencies)
 
