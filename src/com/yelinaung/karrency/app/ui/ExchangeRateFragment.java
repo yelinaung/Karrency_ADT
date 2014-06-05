@@ -42,6 +42,8 @@ import com.yelinaung.karrency.app.R;
 import com.yelinaung.karrency.app.model.Exchange;
 import com.yelinaung.karrency.app.util.SharePrefUtils;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
@@ -204,7 +206,9 @@ public class ExchangeRateFragment extends BaseFragment {
   }
 
   private class GetData extends AsyncTask<Void, Void, Exchange> {
-    Exchange ex;
+    Exchange ex = new Exchange();
+    private String nowTime =
+        new SimpleDateFormat("yyyy/LLL/dd - hh:mm a").format(Calendar.getInstance().getTime());
 
     @Override protected void onPreExecute() {
       super.onPreExecute();
@@ -242,22 +246,26 @@ public class ExchangeRateFragment extends BaseFragment {
       hidePg(usdProgress, sgdProgress, euroProgress, gbpProgress, myrProgress, thbProgress);
       showTv(USD, SGD, EURO, MYR, GBP, THB);
 
-      USD.setText(ex.usd);
-      SGD.setText(ex.sgd);
-      EURO.setText(ex.eur);
-      MYR.setText(ex.myr);
-      GBP.setText(ex.gbp);
-      THB.setText(ex.thb);
+      if (ex != null) {
+        USD.setText(ex.usd);
+        SGD.setText(ex.sgd);
+        EURO.setText(ex.eur);
+        MYR.setText(ex.myr);
+        GBP.setText(ex.gbp);
+        THB.setText(ex.thb);
 
-      SharePrefUtils.getInstance(mContext)
-          .saveCurrencies(ex.usd, ex.sgd, ex.eur, ex.myr, ex.gbp, ex.thb);
+        SharePrefUtils.getInstance(mContext)
+            .saveCurrencies(nowTime, ex.usd, ex.sgd, ex.eur, ex.myr, ex.gbp, ex.thb);
+      } else {
+        Toast.makeText(mContext, R.string.no_connection, Toast.LENGTH_SHORT).show();
+      }
     }
 
     Exchange parse(String result) throws JSONException {
       Exchange ex = new Exchange();
       ex.info = new JSONObject(result).getString("info");
       ex.description = new JSONObject(result).getString("description");
-      ex.timestamp = new JSONObject(result).getInt("timestamp");
+      //ex.timestamp = new JSONObject(result).getInt("timestamp");
       ex.usd = new JSONObject(new JSONObject(result).getString("rates")).getString("USD");
       ex.sgd = new JSONObject(new JSONObject(result).getString("rates")).getString("SGD");
       ex.eur = new JSONObject(new JSONObject(result).getString("rates")).getString("EUR");
